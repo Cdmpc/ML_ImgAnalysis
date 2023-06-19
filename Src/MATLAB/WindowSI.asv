@@ -1,0 +1,56 @@
+function CropList = WindowSI(Pupil_Plane, StartX, StartY, Pitch, PixRatio)
+%
+%-- Pupil_Plane = The image as a matrix.
+%-- StartX, StartY = The X and Y coordinates of the window (i.e, it's top left corner)
+%-- Pitch = 
+imgSize = size(Pupil_Plane);
+
+%-- Crop the image down if it is not a square image.
+if(imgSize(1) ~= imgSize(2))
+    disp("Image is not square, cropping...");
+    smallerDim = min(imgSize(1), imgSize(2));
+    Pupil_Plane = imcrop(Pupil_Plane, [1, 1, smallerDim - 1, smallerDim - 1]);
+    disp("Image is now: ");
+    disp(size(Pupil_Plane));
+end
+
+disp("The Pupil Plane image is: " + imgSize(1) * PixRatio + " microns");
+scanComplete = 0;
+Icrop = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+CropList = cat(3, Icrop);
+
+%-- EXPIREMENTAL TESTING OF GETSUBARRAY METHOD ACCORDING TO R.E'S ORIGINAL
+% C CODE.
+    while 1
+        StartX = StartX + Pitch;
+        % -- Once the right side of the window reaches past the end of the
+        % image in the X-axis, move it back to the start of the X-axis,
+        % then move it down on the Y-axis
+        if(StartX + Pitch > imgSize(2))
+            Icrop = imcrop(Pupil_Plane, [imgSize(2) - Pitch, StartY, Pitch - 1, Pitch - 1]);
+            CropList = cat(3, CropList, Icrop);
+            
+            % -- ONCE THE WINDOW IS DONE SCANNING, IT WILL GO HERE AND EXIT
+            % -- THE FUNCTION.
+            if(scanComplete == 1)
+                disp("Scan Complete, top left window (x, y) == (" ...
+                    + (imgSize(2)-Pitch) + ", " + (imgSize(1)-Pitch) + ")");
+                break;
+            end
+            StartX = 1;
+            StartY = StartY + Pitch;
+            % -- Stop scanning the window once every possible window image
+            % has been scanned.
+            if(StartY + Pitch >= imgSize(1))
+                StartX = 1; 
+                StartY = imgSize(1) - Pitch;
+                scanComplete = 1;
+            end
+        else
+            % -- If it does not need to be moved, Crop image at the current
+            % position.
+            Icrop = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+            CropList = cat(3, CropList, Icrop);
+        end
+    end
+end

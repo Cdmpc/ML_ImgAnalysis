@@ -1,0 +1,67 @@
+function Windows = makeWindows(Pupil_Plane, StartX, StartY, Pitch, PixRatio)
+% CREATES A 3D MATRIX, EACH ELEMENT BEING A PITCH BY PITCH MATRIX DENOTING
+% A WINDOW, ONE AFTER THE OTHER. WHEN COMBINED THE 3D MATRIX SHOULD STILL
+% HAVE THE SAME PROPERTIES.
+%-- Pupil_Plane = The image as a matrix.
+%-- TopLeftX, TopLeftY = The X and Y of the top left corner of the window.
+%-- Pitch = The square window dimension
+%-- PixRatio = The ratio of the spatial image size in microns to pixels.
+% For example, PixRatio = 5.5, means one pixel = 5.5 microns.
+    imgSize = size(Pupil_Plane);
+    
+    %-- Crop the image down if it is not a square image.
+    if(imgSize(1) ~= imgSize(2))
+        disp("Image is not square, cropping...");
+        smallerDim = min(imgSize(1), imgSize(2));
+        Pupil_Plane = imcrop(Pupil_Plane, [1, 1, smallerDim - 1, smallerDim - 1]);
+        disp("Image dimensions in pixels: ");
+        imgSize = size(Pupil_Plane);
+        disp(imgSize);
+    end
+    disp("The Pupil Plane image is: " + imgSize(1) * PixRatio + " microns long and high.");
+    %-- Initialize empty 3D matrix, loop stopping flag and the right side
+    %   of the boxes
+    Windows = cat(3);
+    scanComplete = 0;
+    EndX = StartX + Pitch; 
+    EndY = StartY + Pitch;
+
+    %-- Loop to concatenate other matrices as a 3D matrix.
+    while 1
+        %-- CASE 1: Right Side of square is on edge but still has space
+        %   below.
+        if(EndX >= imgSize(2) && EndY < imgSize(1))
+            Window = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+            Windows = cat(3, Windows, Window);
+            StartX = 1; 
+            EndX = StartX + Pitch;
+            StartY = StartY + Pitch;  
+            EndY = StartY + Pitch;
+        %-- CASE 2: Right Side of Square is on edge and cannot go down
+        %   further.
+        elseif(EndX >= imgSize(2) && EndY >= imgSize(1) && Pitch ~= 1)
+            Window = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+            Windows = cat(3, Windows, Window);
+            disp("Window scan is complete, exiting loop.....");
+            scanComplete = 1;
+        elseif(EndX == imgSize(2) && EndY == imgSize(1) && Pitch == 1)
+            Window = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+            Windows = cat(3, Windows, Window);
+            
+            scanComplete = 1;
+        %-- CASE 3: Window is in space on both X and Y
+        else
+            Window = imcrop(Pupil_Plane, [StartX, StartY, Pitch - 1, Pitch - 1]);
+            Windows = cat(3, Windows, Window);
+            StartX = StartX + Pitch;  
+            EndX = EndX + Pitch;
+        end
+    
+        %-- BREAK OUT OF WHILE LOOP ONCE FLAG TO STOP HAS BEEN SET.
+        if(scanComplete == 1)
+            break;
+        end
+    end
+    WindowList = size(Windows);
+    disp("Scan Complete, " + WindowList(3) + " windows were created.");
+end
