@@ -3,6 +3,13 @@ function [ImgList, numFiles] = readImages3(dirpath)
 %   them into a 3D matrix where each element is the image matrix turned to
 %   a grayscale image thanks to im2gray(imread("image-file.png")); 
 
+%-- ARGUMENTS:
+%   dirpath = The path to the image as a string.
+
+%-- RETURNS:
+%   ImgList = The 3D matrix of concatenated grayscale images.
+%   numFiles = The number of files found in the dirpath.
+
 %   VERY IMPORTANT: The images in the directory MUST ALL BE THE EXACT SAME
 %   SIZE, OTHERWISE THE CONCATENATION WILL NOT WORK.
 
