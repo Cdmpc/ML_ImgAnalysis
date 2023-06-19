@@ -54,4 +54,8 @@ function Windows = makeWindows(Pupil_Plane, StartX, StartY, Pitch, PixRatio)
     %-- Once it has the windows it should call getSubArray on each window
     %   to get one smaller subarray on each window.
 
+    for i = 1:WindowList(3)
+        
+    end
+
 end
