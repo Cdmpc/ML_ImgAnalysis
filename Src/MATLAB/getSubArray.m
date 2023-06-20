@@ -56,5 +56,4 @@ function submatrix = getSubArray(Pupil_Plane, WinSpace, SubSize)
     Row_Range = TopLeftRow:BottomRightRow; Col_Range = TopLeftCol:BottomRightCol;
     %-- ADD ; AFTER DONE TESTING
     submatrix = Window(Row_Range, Col_Range);
-    makeCentroid(submatrix, SubSize);
 end

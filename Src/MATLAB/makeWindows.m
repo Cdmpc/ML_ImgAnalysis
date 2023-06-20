@@ -53,5 +53,4 @@ function Windows = makeWindows(Pupil_Plane, StartX, StartY, Pitch, PixRatio)
     disp("Scan Complete, " + WindowList(3) + " windows were created.");
     %-- Once it has the windows it should call getSubArray on each window
     %   to get one smaller subarray on each window.
-
 end
