@@ -1,16 +1,16 @@
-function findBrightDisp(dirpath, CalibFrame, PixRatio)
+function findBrightDisp(dirpath, CalibMatrix, PixRatio)
 %-- ARGUMENTS: 
 %   dirpath = The directory containing all the data frame images.
-%   CalibFrame = Matrix representation of the Calibration image. This is 1
+%   CalibMatrix = Matrix representation of the Calibration image. This is 1
 %   image being compared to a directory of many Data frame images, all the
 %   same size.
-
 %   PixRatio = The ratio of one pixel to it's real life size in microns. 
 %   For example: If PixRatio = 5.5, that means one pixel = 5.5 microns.
-    calibSize = size(CalibFrame);
+    
+    calibSize = size(CalibMatrix);
     
     %-- Find the maximum pixel and it's position for the calibration frame.
-    [CalMax, CalLoc] = max(CalibFrame, [], "all");
+    [CalMax, CalLoc] = max(CalibMatrix, [], "all");
     [CalMaxRow, CalMaxCol] = ind2sub(calibSize, CalLoc);
     %-- Make cell with these values, and put the values into a table with
     %   the VariableName = [headers].
