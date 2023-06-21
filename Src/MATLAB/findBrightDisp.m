@@ -1,21 +1,22 @@
-function findBrightDisp(dirpath, CalibMatrix, PixRatio)
+function findBrightDisp(dirpath, CalibImg, PixRatio)
 %-- ARGUMENTS: 
 %   dirpath = The directory containing all the data frame images.
-%   CalibMatrix = Matrix representation of the Calibration image. This is 1
-%   image being compared to a directory of many Data frame images, all the
-%   same size.
+%   CalibImg = The path to the calibration image FILE not matrix.
 %   PixRatio = The ratio of one pixel to it's real life size in microns. 
 %   For example: If PixRatio = 5.5, that means one pixel = 5.5 microns.
     
-    calibSize = size(CalibMatrix);
+    %-- Read the calibration image and get it's size.
+    CalibMatrix = im2gray(imread(CalibImg));
+    CalibSize = size(CalibMatrix);
     
     %-- Find the maximum pixel and it's position for the calibration frame.
     [CalMax, CalLoc] = max(CalibMatrix, [], "all");
-    [CalMaxRow, CalMaxCol] = ind2sub(calibSize, CalLoc);
+    [CalMaxRow, CalMaxCol] = ind2sub(CalibSize, CalLoc);
+    
     %-- Make cell with these values, and put the values into a table with
     %   the VariableName = [headers].
     ReferenceCell = {"Calibration Image File", CalMax, CalMaxRow, CalMaxCol, 0, 0};
-    T = cell2table(ReferenceCell, VariableNames=["Name", "Max Value", "Row #", "Column #", "RowDisp (μ)", "ColDisp (μ)"]);
+    T = cell2table(ReferenceCell, VariableNames=["Name", "Max Value", "Row #", "Column #", "Vertical Disp(μ)", "Horizantal Disp(μ)"]);
     writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="overwrite");
 
     %-- Create a 3D matrix, concatenating the data frames as matrices.

@@ -1,4 +1,4 @@
-Name,Max Value,Row #,Column #,RowDisp (μ),ColDisp (μ)
-Calibration Image File,201,228,234,0,0
-calHe.png,79,228,233,0,5.5
-dataHe.png,48,244,256,-88,-121
+Name,Max Value,Row #,Column #,Vertical Disp(μ),Horizantal Disp(μ)
+Calibration Image File,31279,443,463,0,0
+seq0.png,31647,443,463,0,0
+seqCalib.png,31279,443,463,0,0
