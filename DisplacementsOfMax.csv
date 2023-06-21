@@ -1,4 +1,4 @@
-Name,Max Value,Row #,Column #,Row Displacement,Column Displacement
-Calibration Image File,79,228,233,0,0
-calHe.png,79,228,233,0,0
-dataHe.png,48,244,256,-16,-23
+Name,Max Value,Row #,Column #,RowDisp (μ),ColDisp (μ)
+Calibration Image File,201,228,234,0,0
+calHe.png,79,228,233,0,5.5
+dataHe.png,48,244,256,-88,-121
