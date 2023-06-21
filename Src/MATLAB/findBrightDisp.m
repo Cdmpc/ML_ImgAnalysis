@@ -37,6 +37,6 @@ function findBrightDisp(dirpath, CalibFrame, PixRatio)
         T = cell2table(DataCell, VariableNames=["Name", "Max Value", "Row #", "Column #", "Row Displacement", "Column Displacement"]);
         writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="append");
     end
-    disp("========================== [DISPLACEMENTS WRITTEN TO FILE] ==========================");
+    disp("========================== [DISPLACEMENTS WRITTEN TO .CSV FILE] ==========================");
 end
   

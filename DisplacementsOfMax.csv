@@ -1,4 +1,4 @@
 Name,Max Value,Row #,Column #,Row Displacement,Column Displacement
-Calibration Image File,31279,443,463,0,0
-seq0.png,31647,443,463,0,0
-seqCalib.png,31279,443,463,0,0
+Calibration Image File,79,228,233,0,0
+calHe.png,79,228,233,0,0
+dataHe.png,48,244,256,-16,-23
