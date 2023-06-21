@@ -1,23 +1,42 @@
-function findBrightDisp(Pupil_Plane, PixRatio)
+function findBrightDisp(dirpath, CalibImg, PixRatio)
 %-- ARGUMENTS: 
-%   Pupil_Plane = The image as a matrix with each element
-%   being it's pixel intensity
-
+%   dirpath = The directory containing all the data frame images.
+%   CalibImg = The path to the calibration image FILE not matrix.
 %   PixRatio = The ratio of one pixel to it's real life size in microns. 
 %   For example: If PixRatio = 5.5, that means one pixel = 5.5 microns.
-    imgSize = size(Pupil_Plane);
-    disp("The Pupil Plane image is: " + imgSize(1) * PixRatio + " microns long and high.");
     
-    %-- Crop the image down if it is not a square image. 
-    if(imgSize(1) ~= imgSize(2))
-        disp("Image is not square, cropping...");
-        smallerDim = min(imgSize(1), imgSize(2));
-        Pupil_Plane = imcrop(Pupil_Plane, [1, 1, smallerDim - 1, smallerDim - 1]);
-        disp("Image dimensions in pixels: ");
-        imgSize = size(Pupil_Plane);
-        disp(imgSize);
-    end
+    %-- Read the calibration image and get it's size.
+    CalibMatrix = im2gray(imread(CalibImg));
+    CalibSize = size(CalibMatrix);
+    
+    %-- Find the maximum pixel and it's position for the calibration frame.
+    [CalMax, CalLoc] = max(CalibMatrix, [], "all");
+    [CalMaxRow, CalMaxCol] = ind2sub(CalibSize, CalLoc);
+    
+    %-- Make cell with these values, and put the values into a table with
+    %   the VariableName = [headers].
+    ReferenceCell = {"Calibration Image File", CalMax, CalMaxRow, CalMaxCol, 0, 0};
+    T = cell2table(ReferenceCell, VariableNames=["Name", "Max Value", "Row #", "Column #", "Vertical Disp(μ)", "Horizantal Disp(μ)"]);
+    writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="overwrite");
 
+    %-- Create a 3D matrix, concatenating the data frames as matrices.
+    [ImgList, numFiles, File] = catImgs3(dirpath);
     
+    %-- Loop comparing each data matrix with the calibration matrix.
+    for i = 1:numFiles
+        %-- Find the max pixel in each data image and it's location.
+        [DataMax, DataLoc] = max(ImgList(:, :, i), [], "all");
+        [DataMaxRow, DataMaxCol] = ind2sub(size(ImgList), DataLoc);
+        %-- The calibration pixel will be the reference displacement,
+        %   a negative value means the pixel has moved left in the X
+        %   direction, and/or down in the Y direction. Vice Versa if the
+        %   displacement values are positive.
+        RowDisp = CalMaxRow - DataMaxRow;
+        ColDisp = CalMaxCol - DataMaxCol;
+        DataCell = {File(i + 2).name, DataMax, DataMaxRow, DataMaxCol, (RowDisp * PixRatio), (ColDisp * PixRatio)};
+        T = cell2table(DataCell);
+        writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="append");
+    end
+    disp("========================== [DISPLACEMENTS WRITTEN TO .CSV FILE] ==========================");
 end
   
