@@ -4,6 +4,12 @@ function findBrightDisp(dirpath, CalibImg, PixRatio)
 %   CalibImg = The path to the calibration image FILE not matrix.
 %   PixRatio = The ratio of one pixel to it's real life size in microns. 
 %   For example: If PixRatio = 5.5, that means one pixel = 5.5 microns.
+
+    %Ensure PixRatio is positive:
+    if(PixRatio <= 0)
+        disp("Please make sure PixRatio is a positive number");
+        return;
+    end
     
     %-- Read the calibration image and get it's size.
     CalibMatrix = im2gray(imread(CalibImg));
@@ -27,10 +33,9 @@ function findBrightDisp(dirpath, CalibImg, PixRatio)
         %-- Find the max pixel in each data image and it's location.
         [DataMax, DataLoc] = max(ImgList(:, :, i), [], "all");
         [DataMaxRow, DataMaxCol] = ind2sub(size(ImgList), DataLoc);
-        %-- The calibration pixel will be the reference displacement,
-        %   a negative value means the pixel has moved left in the X
-        %   direction, and/or down in the Y direction. Vice Versa if the
-        %   displacement values are positive.
+        %-- The calibration pixel will be the reference coordinate.
+        %-- Pos. displacement = Right in X, Up in Y.
+        %-- Neg. displacement = Left in X, Down in Y.
         RowDisp = CalMaxRow - DataMaxRow;
         ColDisp = CalMaxCol - DataMaxCol;
         DataCell = {File(i + 2).name, DataMax, DataMaxRow, DataMaxCol, (RowDisp * PixRatio), (ColDisp * PixRatio)};
