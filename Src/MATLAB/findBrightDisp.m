@@ -14,10 +14,10 @@ function findBrightDisp(dirpath, CalibImg, PixRatio)
     [CalMaxRow, CalMaxCol] = ind2sub(CalibSize, CalLoc);
     
     %-- Make cell with these values, and put the values into a table with
-    %   the VariableName = [headers].
+    %   the VariableName = [Column titles].
     ReferenceCell = {"Calibration Image File", CalMax, CalMaxRow, CalMaxCol, 0, 0};
     T = cell2table(ReferenceCell, VariableNames=["Name", "Max Value", "Row #", "Column #", "Vertical Disp(μ)", "Horizantal Disp(μ)"]);
-    writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="overwrite");
+    writetable(T, "SpotDisp.csv", Delimiter=",", WriteMode="overwrite");
 
     %-- Create a 3D matrix, concatenating the data frames as matrices.
     [ImgList, numFiles, File] = catImgs3(dirpath);
@@ -35,7 +35,7 @@ function findBrightDisp(dirpath, CalibImg, PixRatio)
         ColDisp = CalMaxCol - DataMaxCol;
         DataCell = {File(i + 2).name, DataMax, DataMaxRow, DataMaxCol, (RowDisp * PixRatio), (ColDisp * PixRatio)};
         T = cell2table(DataCell);
-        writetable(T, 'DisplacementsOfMax.csv', Delimiter=",", WriteMode="append");
+        writetable(T, "SpotDisp.csv", Delimiter=",", WriteMode="append");
     end
     disp("========================== [DISPLACEMENTS WRITTEN TO .CSV FILE] ==========================");
 end
