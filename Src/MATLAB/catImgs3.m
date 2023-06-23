@@ -5,11 +5,11 @@ function [ImgList, numFiles, filesInDir] = catImgs3(dirpath)
 
 %-- ARGUMENTS:
 %   dirpath = The directory storing the data images.
-%   CalibMatrix = Matrix representation of the calibration image.
 
 %-- RETURNS:
 %   ImgList = The 3D matrix of concatenated grayscale images.
 %   numFiles = The number of files found in the dirpath.
+%   filesInDir = The properties of each file returned by dir().
 
 %   VERY IMPORTANT: The images in the directory MUST ALL BE THE EXACT SAME
 %   SIZE, OTHERWISE THE CONCATENATION WILL NOT WORK.
