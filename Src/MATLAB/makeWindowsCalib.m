@@ -7,7 +7,7 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
 % ARGUEMENTS:
 % CalibFile = The calibration image path.
 % SpotSpacing = How many pixels each spot is spaced apart, both in X and Y.
-% Closeness = How close to the center the window should span out
+% Sigma = How spread out from the center the square ROI is.
 
 % RETURNS:
 % CalibCenters = The reference coordinates for the spots, with respect to
