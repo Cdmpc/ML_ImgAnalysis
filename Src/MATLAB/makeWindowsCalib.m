@@ -47,13 +47,13 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
     disp("The first spot will be in (Y, X) = (" + minRow + ", " + minCol + ")"); 
     TopLeftY = minRow - floor(Pitch / 2);
     TopLeftX = minCol - floor(Pitch / 2);
-    writematrix([], "SpotDisp.csv", WriteMode="overwrite");
+    writematrix([], "CalibDisp.csv", WriteMode="overwrite");
     
     currentRow = minRow;
     currentCol = minCol;
 
-    maxRow = CalibSize(1) - minRow;
-    maxCol = CalibSize(2) - minCol;
+    maxRow = CalibSize(1) - floor(minRow / 2);
+    maxCol = CalibSize(2) - floor(minCol / 2);
 
     while 1
         %-- CASE 1: Reached edge in the X direction, the column
@@ -75,7 +75,7 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
             rectangle(Position=[TopLeftX - 0.5 + OffSetX, TopLeftY - 0.5 + OffSetY, Pitch - 0.5, Pitch - 0.5], EdgeColor="red", LineWidth=1);
             CalibCell = {currentCol + OffSetX, currentRow + OffSetY, 0, 0};
             T = cell2table(CalibCell);
-            writetable(T, "SpotDisp.csv", Delimiter=",", WriteMode="append");
+            writetable(T, "CalibDisp.csv", Delimiter=",", WriteMode="append");
             CalibCenters = cat(3, CalibCenters, [currentRow + OffSetX, currentCol + OffSetY]);
             currentCol = minCol;
             currentRow = currentRow + SpotSpacing;
@@ -100,12 +100,12 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
             rectangle(Position=[TopLeftX - 0.5 + OffSetX, TopLeftY - 0.5 + OffSetY, Pitch - 0.5, Pitch - 0.5], EdgeColor="red", LineWidth=1);
             CalibCell = {currentCol + OffSetX, currentRow + OffSetY, 0, 0};
             T = cell2table(CalibCell);
-            writetable(T, "SpotDisp.csv", Delimiter=",", WriteMode="append");
+            writetable(T, "CalibDisp.csv", Delimiter=",", WriteMode="append");
             CalibCenters = cat(3, CalibCenters, [currentRow + OffSetX, currentCol + OffSetY]);
             break;
         %-- CASE 3: Normal case, space in both X and Y available
         else
-            subimg = imcrop(CalibMatrix, [TopLeftX, TopLeftY, Pitch - 2, Pitch - 2]);
+            subimg = imcrop(CalibMatrix, [TopLeftX, TopLeftY, SpotSpacing - 1, SpotSpacing - 1]);
             [submax, li] = max(subimg, [], "all");
             [mr, mc] = ind2sub(size(subimg), li);
             OffSetX = 0; OffSetY = 0;
@@ -122,11 +122,12 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
             rectangle(Position=[TopLeftX - 0.5 + OffSetX, TopLeftY - 0.5 + OffSetY, Pitch - 0.5, Pitch - 0.5], EdgeColor="red", LineWidth=1);
             CalibCell = {currentCol + OffSetX, currentRow + OffSetY, 0, 0};
             T = cell2table(CalibCell, VariableNames=["Column #", "Row #", "Vertical Disp", "Horizantal Disp"]);
-            writetable(T, "SpotDisp.csv", Delimiter=",", WriteMode="append");
+            writetable(T, "CalibDisp.csv", Delimiter=",", WriteMode="append");
             CalibCenters = cat(3, CalibCenters, [currentRow + OffSetX, currentCol + OffSetY]);
             currentCol = currentCol + SpotSpacing;
             TopLeftX = currentCol - floor(Pitch / 2);
         end 
     end
     disp("CALIBRATION FILE WRITTEN TO .CSV FILE");
+    fclose("all");
 end
