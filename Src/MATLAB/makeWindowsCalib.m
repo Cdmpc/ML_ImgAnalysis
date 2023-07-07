@@ -59,7 +59,7 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
         %-- CASE 1: Reached edge in the X direction, the column
         if(currentCol + SpotSpacing > maxCol && currentRow + SpotSpacing <= maxRow)
             subimg = imcrop(CalibMatrix, [TopLeftX, TopLeftY, Pitch - 2, Pitch - 2]);
-            [submax, li] = max(subimg, [], "all");
+            [~, li] = max(subimg, [], "all");
             [mr, mc] = ind2sub(size(subimg), li);
             OffSetX = 0; OffSetY = 0;
             if(mc > floor(Pitch - floor(Pitch / 2)) && currentCol > 1)
@@ -84,7 +84,7 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
         %-- CASE 2: Reached bottom corner, cannot go in X and Y further.
         elseif(currentRow + SpotSpacing > maxRow && currentCol + SpotSpacing > maxCol)
             subimg = imcrop(CalibMatrix, [TopLeftX, TopLeftY, Pitch - 2, Pitch - 2]);
-            [submax, li] = max(subimg, [], "all");
+            [~, li] = max(subimg, [], "all");
             [mr, mc] = ind2sub(size(subimg), li);
             OffSetX = 0; OffSetY = 0;
             if(mc > floor(Pitch - floor(Pitch / 2)) && currentCol > 1)
@@ -106,7 +106,7 @@ function CalibCenters = makeWindowsCalib(CalibFile, SpotSpacing, Sigma)
         %-- CASE 3: Normal case, space in both X and Y available
         else
             subimg = imcrop(CalibMatrix, [TopLeftX, TopLeftY, SpotSpacing - 1, SpotSpacing - 1]);
-            [submax, li] = max(subimg, [], "all");
+            [~, li] = max(subimg, [], "all");
             [mr, mc] = ind2sub(size(subimg), li);
             OffSetX = 0; OffSetY = 0;
             if(mc > floor(Pitch - floor(Pitch / 2)) && currentCol > 1)
